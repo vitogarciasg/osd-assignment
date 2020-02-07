@@ -53,7 +53,6 @@ import com.easyfitness.DAO.Weight;
 import com.easyfitness.DatePickerDialogFragment;
 import com.easyfitness.MainActivity;
 import com.easyfitness.R;
-import com.easyfitness.SettingsFragment;
 import com.easyfitness.TimePickerDialogFragment;
 import com.easyfitness.machines.ExerciseDetailsPager;
 import com.easyfitness.machines.MachineArrayFullAdapter;
@@ -66,7 +65,6 @@ import com.ikovac.timepickerwithseconds.MyTimePickerDialog;
 import com.mikhaellopez.circularimageview.CircularImageView;
 import com.onurkaganaldemir.ktoastlib.KToast;
 
-import java.sql.Time;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -79,8 +77,7 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
 public class FontesFragment extends Fragment {
     MainActivity mActivity = null;
     Profile mProfile = null;
-    TextView dateEdit = null;
-    TextView timeEdit = null;
+    EditText dateEdit = null;
     AutoCompleteTextView machineEdit = null;
     MachineArrayFullAdapter machineEditAdapter = null;
     EditText serieEdit = null;
@@ -98,7 +95,6 @@ public class FontesFragment extends Fragment {
     CheckBox restTimeCheck = null;
     DatePickerDialogFragment mDateFrag = null;
     TimePickerDialogFragment mDurationFrag = null;
-    TimePickerDialogFragment mTimeFrag = null;
     CircularImageView machineImage = null;
     TextView minText = null;
     TextView maxText = null;
@@ -116,9 +112,8 @@ public class FontesFragment extends Fragment {
     LinearLayout cardioLayout = null;
     LinearLayout restTimeLayout = null;
     EditText distanceEdit = null;
-    TextView durationEdit = null;
+    EditText durationEdit = null;
     EditText secondsEdit = null;
-    CheckBox autoTimeCheckBox = null;
 
     CardView serieCardView = null;
     CardView repetitionCardView = null;
@@ -140,28 +135,6 @@ public class FontesFragment extends Fragment {
         else strHour = Integer.toString(hourOfDay);
         if (second < 10) strSecond = "0" + Integer.toString(second);
         else strSecond = Integer.toString(second);
-
-        View viewT = view.getRootView();
-
-        String date = strHour + ":" + strMinute + ":" + strSecond;
-        timeEdit.setText(date);
-        hideKeyboard(timeEdit);
-    };
-
-    public MyTimePickerDialog.OnTimeSetListener durationSet = (view, hourOfDay, minute, second) -> {
-        // Do something with the time chosen by the user
-        String strMinute = "00";
-        String strHour = "00";
-        String strSecond = "00";
-
-        if (minute < 10) strMinute = "0" + Integer.toString(minute);
-        else strMinute = Integer.toString(minute);
-        if (hourOfDay < 10) strHour = "0" + Integer.toString(hourOfDay);
-        else strHour = Integer.toString(hourOfDay);
-        if (second < 10) strSecond = "0" + Integer.toString(second);
-        else strSecond = Integer.toString(second);
-
-        View viewT = view.getRootView();
 
         String date = strHour + ":" + strMinute + ":" + strSecond;
         durationEdit.setText(date);
@@ -223,6 +196,7 @@ public class FontesFragment extends Fragment {
                     poids = UnitConverter.KgtoLbs(poids);
                 }
                 unitSpinner.setSelection(f.getUnit());
+
                 poidsEdit.setText(numberFormat.format(poids));
             } else if (r.getType() == DAOMachine.TYPE_STATIC) {
                 StaticExercise f = (StaticExercise) r;
@@ -253,15 +227,14 @@ public class FontesFragment extends Fragment {
             return;
         }
 
-        String timeStr;
         Date date;
-
-        if (autoTimeCheckBox.isChecked()) {
+        try {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+            dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
+            date = dateFormat.parse(dateEdit.getText().toString());
+        } catch (ParseException e) {
+            e.printStackTrace();
             date = new Date();
-            timeStr = DateConverter.currentTime();
-        }else {
-            date = DateConverter.editToDate(dateEdit.getText().toString());
-            timeStr = timeEdit.getText().toString();
         }
 
         int exerciseType = DAOMachine.TYPE_FONTE;
@@ -297,7 +270,7 @@ public class FontesFragment extends Fragment {
                 getProfil(),
                 unitPoids, // Store Unit for future display
                 "", //Notes
-                timeStr
+                DateConverter.currentTime()
             );
 
             float iTotalWeightSession = mDbBodyBuilding.getTotalWeightSession(date);
@@ -347,7 +320,7 @@ public class FontesFragment extends Fragment {
                 getProfil(),
                 unitPoids, // Store Unit for future display
                 "", //Notes
-                timeStr
+                DateConverter.currentTime()
             );
 
             float iTotalWeightSession = mDbStatic.getTotalWeightSession(date);
@@ -405,7 +378,7 @@ public class FontesFragment extends Fragment {
             }
 
             mDbCardio.addCardioRecord(date,
-                timeStr,
+                DateConverter.currentTime(),
                 machineEdit.getText().toString(),
                 distance,
                 duration,
@@ -508,11 +481,8 @@ public class FontesFragment extends Fragment {
             case R.id.editDate:
                 showDatePickerFragment();
                 break;
-            case R.id.editTime:
-                showTimePicker(timeEdit);
-                break;
             case R.id.editDuration:
-                showTimePicker(durationEdit);
+                showTimePicker();
                 break;
             case R.id.editMachine:
                 //InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -525,6 +495,9 @@ public class FontesFragment extends Fragment {
     private OnFocusChangeListener touchRazEdit = (v, hasFocus) -> {
         if (hasFocus) {
             switch (v.getId()) {
+                case R.id.editDate:
+                    showDatePickerFragment();
+                    break;
                 case R.id.editSerie:
                     serieEdit.setText("");
                     break;
@@ -538,7 +511,7 @@ public class FontesFragment extends Fragment {
                     poidsEdit.setText("");
                     break;
                 case R.id.editDuration:
-                    showTimePicker(durationEdit);
+                    showTimePicker();
                     break;
                 case R.id.editDistance:
                     distanceEdit.setText("");
@@ -563,11 +536,6 @@ public class FontesFragment extends Fragment {
                     break;
             }
         }
-    };
-
-    private CompoundButton.OnCheckedChangeListener checkedAutoTimeCheckBox = (buttonView, isChecked) -> {
-        dateEdit.setEnabled(!isChecked);
-        timeEdit.setEnabled(!isChecked);
     };
 
     /**
@@ -663,7 +631,6 @@ public class FontesFragment extends Fragment {
         View view = inflater.inflate(R.layout.tab_fontes, container, false);
 
         dateEdit = view.findViewById(R.id.editDate);
-        timeEdit = view.findViewById(R.id.editTime);
         machineEdit = view.findViewById(R.id.editMachine);
         serieEdit = view.findViewById(R.id.editSerie);
         repetitionEdit = view.findViewById(R.id.editRepetition);
@@ -691,7 +658,6 @@ public class FontesFragment extends Fragment {
         durationEdit = view.findViewById(R.id.editDuration);
         distanceEdit = view.findViewById(R.id.editDistance);
         secondsEdit = view.findViewById(R.id.editSeconds);
-        autoTimeCheckBox = view.findViewById(R.id.autoTimeCheckBox);
 
         serieCardView = view.findViewById(R.id.cardviewSerie);
         repetitionCardView = view.findViewById(R.id.cardviewRepetition);
@@ -705,14 +671,13 @@ public class FontesFragment extends Fragment {
         machineListButton.setOnClickListener(onClickMachineListWithIcons); //onClickMachineList
 
         dateEdit.setOnClickListener(clickDateEdit);
-        timeEdit.setOnClickListener(clickDateEdit);
-        autoTimeCheckBox.setOnCheckedChangeListener(checkedAutoTimeCheckBox);
-
+        dateEdit.setOnFocusChangeListener(touchRazEdit);
         serieEdit.setOnFocusChangeListener(touchRazEdit);
         repetitionEdit.setOnFocusChangeListener(touchRazEdit);
         poidsEdit.setOnFocusChangeListener(touchRazEdit);
         distanceEdit.setOnFocusChangeListener(touchRazEdit);
         durationEdit.setOnClickListener(clickDateEdit);
+        durationEdit.setOnFocusChangeListener(touchRazEdit);
         secondsEdit.setOnFocusChangeListener(touchRazEdit);
         machineEdit.setOnKeyListener(checkExerciseExists);
         machineEdit.setOnFocusChangeListener(touchRazEdit);
@@ -729,23 +694,13 @@ public class FontesFragment extends Fragment {
         restoreSharedParams();
 
         SharedPreferences SP = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        int weightUnit = UnitConverter.UNIT_KG;
+        int defaultUnit = 0;
         try {
-            weightUnit = Integer.valueOf(SP.getString(SettingsFragment.WEIGHT_UNIT_PARAM, "0"));
+            defaultUnit = Integer.valueOf(SP.getString("defaultUnit", "0"));
         } catch (NumberFormatException e) {
-            weightUnit = UnitConverter.UNIT_KG;
+            defaultUnit = 0;
         }
-        unitSpinner.setSelection(weightUnit);
-
-        int distanceUnit = UnitConverter.UNIT_KM;
-        try {
-            distanceUnit = Integer.valueOf(SP.getString(SettingsFragment.DISTANCE_UNIT_PARAM, "0"));
-        } catch (NumberFormatException e) {
-            distanceUnit = UnitConverter.UNIT_KM;
-        }
-        unitDistanceSpinner.setSelection(distanceUnit);
-
-
+        unitSpinner.setSelection(defaultUnit);
 
         // Initialisation de la base de donnee
         mDbBodyBuilding = new DAOFonte(getContext());
@@ -816,8 +771,8 @@ public class FontesFragment extends Fragment {
         }
     }
 
-    private void showTimePicker(TextView timeTextView) {
-        String tx =  timeTextView.getText().toString();
+    private void showTimePicker() {
+        String tx =  durationEdit.getText().toString();
         int hour;
         try {
             hour = Integer.valueOf(tx.substring(0, 2));
@@ -837,37 +792,19 @@ public class FontesFragment extends Fragment {
             sec=0;
         }
 
-        switch(timeTextView.getId()) {
-            case R.id.editTime:
-                if (mTimeFrag == null) {
-                    mTimeFrag = TimePickerDialogFragment.newInstance(timeSet, hour, min, sec);
-                    mTimeFrag.show(getActivity().getFragmentManager().beginTransaction(), "dialog_time");
-                } else {
-                    if (!mTimeFrag.isVisible()) {
-                        Bundle bundle = new Bundle();
-                        bundle.putInt("HOUR", hour);
-                        bundle.putInt("MINUTE", min);
-                        bundle.putInt("SECOND", sec);
-                        mTimeFrag.setArguments(bundle);
-                        mTimeFrag.show(getActivity().getFragmentManager().beginTransaction(), "dialog_time");
-                    }
-                }
-                break;
-            case R.id.editDuration:
-                if (mDurationFrag == null) {
-                    mDurationFrag = TimePickerDialogFragment.newInstance(durationSet, hour, min, sec);
-                    mDurationFrag.show(getActivity().getFragmentManager().beginTransaction(), "dialog_time");
-                } else {
-                    if (!mDurationFrag.isVisible()) {
-                        Bundle bundle = new Bundle();
-                        bundle.putInt("HOUR", hour);
-                        bundle.putInt("MINUTE", min);
-                        bundle.putInt("SECOND", sec);
-                        mDurationFrag.setArguments(bundle);
-                        mDurationFrag.show(getActivity().getFragmentManager().beginTransaction(), "dialog_time");
-                    }
-                }
-                break;
+        if (mDurationFrag == null) {
+            mDurationFrag = TimePickerDialogFragment.newInstance(timeSet, hour, min, sec);
+            //mDurationFrag.setTime(hour, min, sec);
+            mDurationFrag.show(getActivity().getFragmentManager().beginTransaction(), "dialog_time");
+        } else {
+            if (!mDurationFrag.isVisible()) {
+                Bundle bundle = new Bundle();
+                bundle.putInt("HOUR", hour);
+                bundle.putInt("MINUTE", min);
+                bundle.putInt("SECOND", sec);
+                mDurationFrag.setArguments(bundle);
+                mDurationFrag.show(getActivity().getFragmentManager().beginTransaction(), "dialog_time");
+            }
         }
     }
 
@@ -1116,10 +1053,7 @@ public class FontesFragment extends Fragment {
                 }
 
                 // Set Initial text
-                if (autoTimeCheckBox.isChecked()) {
-                    dateEdit.setText(DateConverter.currentDate());
-                    timeEdit.setText(DateConverter.currentTime());
-                }
+                dateEdit.setText(DateConverter.currentDate());
 
                 // Set Table
                 updateRecordTable(machineEdit.getText().toString());

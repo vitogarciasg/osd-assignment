@@ -1,7 +1,6 @@
 package com.easyfitness;
 
 import android.Manifest;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -16,7 +15,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -43,8 +41,6 @@ import com.easyfitness.DAO.DatabaseHelper;
 import com.easyfitness.DAO.Fonte;
 import com.easyfitness.DAO.Machine;
 import com.easyfitness.DAO.Profile;
-import com.easyfitness.DAO.bodymeasures.BodyMeasure;
-import com.easyfitness.DAO.bodymeasures.DAOBodyMeasure;
 import com.easyfitness.DAO.cardio.DAOOldCardio;
 import com.easyfitness.DAO.cardio.OldCardio;
 import com.easyfitness.bodymeasures.BodyPartListFragment;
@@ -53,7 +49,6 @@ import com.easyfitness.intro.MainIntroActivity;
 import com.easyfitness.machines.MachineFragment;
 import com.easyfitness.utils.CustomExceptionHandler;
 import com.easyfitness.utils.DateConverter;
-import com.easyfitness.utils.EditableInputView.EditableInputView;
 import com.easyfitness.utils.FileChooserDialog;
 import com.easyfitness.utils.ImageUtil;
 import com.easyfitness.utils.MusicController;
@@ -65,10 +60,10 @@ import com.theartofdev.edmodo.cropper.CropImageView;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -87,12 +82,16 @@ public class MainActivity extends AppCompatActivity {
     public static String MACHINES = "Machines";
     public static String MACHINESDETAILS = "MachinesDetails";
     public static String PREFS_NAME = "prefsfile";
+    //
+    public static String FIVETHREEONE = "FiveThreeOne"; //added
     private final int REQUEST_CODE_INTRO = 111;
     private final int MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 1001;
     CustomDrawerAdapter mDrawerAdapter;
     List<DrawerItem> dataList;
     private FontesPagerFragment mpFontesPagerFrag = null;
     private WeightFragment mpWeightFrag = null;
+    //
+    private FiveThreeOne mpFivethreeoneFrag = null;
     private ProfileFragment mpProfileFrag = null;
     private MachineFragment mpMachineFrag = null;
     private SettingsFragment mpSettingFrag = null;
@@ -216,6 +215,8 @@ public class MainActivity extends AppCompatActivity {
             if (mpFontesPagerFrag == null)
                 mpFontesPagerFrag = FontesPagerFragment.newInstance(FONTESPAGER, 6);
             if (mpWeightFrag == null) mpWeightFrag = WeightFragment.newInstance(WEIGHT, 5);
+            //;
+            if (mpFivethreeoneFrag == null) mpFivethreeoneFrag = FiveThreeOne.newInstance(FIVETHREEONE, 11);
             if (mpProfileFrag == null) mpProfileFrag = ProfileFragment.newInstance(PROFILE, 10);
             if (mpSettingFrag == null) mpSettingFrag = SettingsFragment.newInstance(SETTINGS, 8);
             if (mpAboutFrag == null) mpAboutFrag = AboutFragment.newInstance(ABOUT, 6);
@@ -307,6 +308,10 @@ public class MainActivity extends AppCompatActivity {
         dataList.add(new DrawerItem(this.getResources().getString(R.string.bodytracking), R.drawable.ic_measuring_tape, true));
         dataList.add(new DrawerItem(this.getResources().getString(R.string.SettingLabel), R.drawable.ic_params, true));
         dataList.add(new DrawerItem(this.getResources().getString(R.string.AboutLabel), R.drawable.ic_action_info_outline, true));
+
+        //add new drawer item
+
+        dataList.add(new DrawerItem(this.getResources().getString(R.string.), R.drawable.ic_machine, true));
 
         mDrawerAdapter = new CustomDrawerAdapter(this, R.layout.custom_drawer_item,
             dataList);
@@ -839,6 +844,16 @@ public class MainActivity extends AppCompatActivity {
 
         return mpWeightFrag;
     }
+    private FiveThreeOne getFiveThreeOne() {
+        if (mpFivethreeoneFrag == null)
+            mpFivethreeoneFrag = (FiveThreeOne) getSupportFragmentManager().findFragmentByTag(FIVETHREEONE);
+        if (mpFivethreeoneFrag == null) mpFivethreeoneFrag = FiveThreeOne.newInstance(FIVETHREEONE, 11);
+
+        return mpWeightFrag;
+    }
+
+
+
 
     private ProfileFragment getProfileFragment() {
         if (mpProfileFrag == null)
@@ -982,14 +997,18 @@ public class MainActivity extends AppCompatActivity {
                     setTitle(getResources().getText(R.string.weightMenuLabel));
                     break;
                 case 4:
+                    showFragment(FIVETHREEONE);
+                    setTitle(getResources().getText(R.string.));
+                    break;
+                case 5:
                     showFragment(BODYTRACKING);
                     setTitle(getResources().getText(R.string.bodytracking));
                     break;
-                case 5:
+                case 6:
                     showFragment(SETTINGS);
                     setTitle(getResources().getText(R.string.SettingLabel));
                     break;
-                case 6:
+                case 7:
                     showFragment(ABOUT);
                     setTitle(getResources().getText(R.string.AboutLabel));
                     break;

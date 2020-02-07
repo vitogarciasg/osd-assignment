@@ -156,7 +156,7 @@
                     android:inputType="numberSigned"
                     android:singleLine="true"
                     android:textColor="@android:color/black"
-                    android:textColorHint="@color/gray" />
+                    android:textColorHint="@color/blue" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
