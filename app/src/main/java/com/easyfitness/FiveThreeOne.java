@@ -21,15 +21,14 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
-
+import androidx.fragment.app.Fragment;
 
 
 import java.text.DecimalFormat;
 
 
-public class FiveThreeOne extends AppCompatActivity {
+public class FiveThreeOne extends Fragment {
 
 
     int selectedLift = 1;
@@ -106,11 +105,11 @@ public class FiveThreeOne extends AppCompatActivity {
 
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_531);
+        getActivity().setContentView(R.layout.activity_531);
 
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         uiRefSetup();
 
         squatEditText.setOnKeyListener(onKeyListener);
@@ -119,13 +118,13 @@ public class FiveThreeOne extends AppCompatActivity {
         overheadpressEditText.setOnKeyListener(onKeyListener);
 
         String[] spinnerItems = new String[] {"C.G. Bench", "Front Squats", "Incline Bench", "OHP", "Sumo DL"};
-        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_spinner_dropdown_item, spinnerItems);
+        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(getActivity().getApplicationContext(), android.R.layout.simple_spinner_dropdown_item, spinnerItems);
         secondLiftSpinner.setAdapter(spinnerAdapter);
         secondLiftSpinner.setOnItemSelectedEvenIfUnchangedListener(itemSelectedListener);
 
 
         ///// GETTING SAVED SHARED PREFERENCES FOR THE FOUR BIG EDIT TEXTS ///////////////////////////////////////////////
-        SharedPreferences sharedPref = getApplicationContext().getSharedPreferences("com.jalbers.nsunstest", Context.MODE_PRIVATE);
+        SharedPreferences sharedPref = getActivity().getApplicationContext().getSharedPreferences("com.jalbers.nsunstest", Context.MODE_PRIVATE);
         int count = sharedPref.getInt("Count", 0);
         float[] savedWeight = new float[4];
 
@@ -233,7 +232,7 @@ public class FiveThreeOne extends AppCompatActivity {
             }
         });/////////////////////////////////////////////////////////////////////////////////////////////////
 
-        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
     }
 
 
@@ -296,7 +295,7 @@ public class FiveThreeOne extends AppCompatActivity {
         ((TextView) secondLiftSpinner.getSelectedView()).setTextColor(Color.BLACK);
         offDayTextView.setTextColor(Color.BLACK);
 
-        LinearLayout set9LinearLayout = (LinearLayout) findViewById(R.id.set9LinearLayout);
+        LinearLayout set9LinearLayout = (LinearLayout) getActivity().findViewById(R.id.set9LinearLayout);
         set9LinearLayout.setVisibility(View.VISIBLE);
 
         setFiveThreeOneText();
@@ -417,7 +416,7 @@ public class FiveThreeOne extends AppCompatActivity {
         fiveThreeOneTextView.setTextColor(Color.BLACK);
         offDayTextView.setTextColor(Color.BLACK);
 
-        LinearLayout set9LinearLayout = (LinearLayout) findViewById(R.id.set9LinearLayout);
+        LinearLayout set9LinearLayout = (LinearLayout) getActivity().findViewById(R.id.set9LinearLayout);
         set9LinearLayout.setVisibility(View.GONE);
 
         setSecondLiftText();
@@ -553,7 +552,7 @@ public class FiveThreeOne extends AppCompatActivity {
         ((TextView) secondLiftSpinner.getSelectedView()).setTextColor(Color.BLACK);
         offDayTextView.setTextColor(Color.WHITE);
 
-        LinearLayout set9LinearLayout = (LinearLayout) findViewById(R.id.set9LinearLayout);
+        LinearLayout set9LinearLayout = (LinearLayout) getActivity().findViewById(R.id.set9LinearLayout);
         set9LinearLayout.setVisibility(View.VISIBLE);
 
         setOffDayText();
@@ -686,13 +685,13 @@ public class FiveThreeOne extends AppCompatActivity {
                     } else if (offDay) {
                         setOffDayText();
                     }
-                    InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
+                    InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(Activity.INPUT_METHOD_SERVICE);
                     inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
                     return true;
 
                 } catch (Exception e) {
 
-                    Toast.makeText(getApplicationContext(), "Please insert a number", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity().getApplicationContext(), "Please insert a number", Toast.LENGTH_SHORT).show();
                 }
 
             }
@@ -740,7 +739,7 @@ public class FiveThreeOne extends AppCompatActivity {
 
     public void saveWeight (float[] array) {
 
-        SharedPreferences sharedPref = getApplicationContext().getSharedPreferences("com.jalbers.nsunstest", Context.MODE_PRIVATE);
+        SharedPreferences sharedPref = getActivity().getApplicationContext().getSharedPreferences("com.jalbers.nsunstest", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putInt("Count", array.length);
 
@@ -758,54 +757,54 @@ public class FiveThreeOne extends AppCompatActivity {
     ////////////////////////////////////ALL THE UI FINDVIEWBYID STUFF/////////////////////////////////////////////////////
     public void uiRefSetup () {
 
-        mainLayout = (ConstraintLayout) findViewById(R.id.mainLayout);
-        horizontalScrollView = (HorizontalScrollView) findViewById(R.id.horizontalScrollView);
-        bigFourLinearLayout = (LinearLayout) findViewById(R.id.bigFourLayout);
-        verticalScrollView = (ScrollView) findViewById(R.id.verticalScrollView);
-        workoutLinearLayout = (LinearLayout) findViewById(R.id.workoutLinearLayout);
-        bottomButtonsLayout = (LinearLayout) findViewById(R.id.bottomButtonsLayout);
+        mainLayout = (ConstraintLayout) getActivity().findViewById(R.id.mainlayout);
+        horizontalScrollView = (HorizontalScrollView) getActivity().findViewById(R.id.horizontalScrollView);
+        bigFourLinearLayout = (LinearLayout) getActivity().findViewById(R.id.bigFourLayout);
+        verticalScrollView = (ScrollView) getActivity().findViewById(R.id.verticalScrollView);
+        workoutLinearLayout = (LinearLayout) getActivity().findViewById(R.id.workoutLinearLayout);
+        bottomButtonsLayout = (LinearLayout) getActivity().findViewById(R.id.bottomButtonsLayout);
 
 
-        squatEditText = (EditText) findViewById(R.id.squatEditText);
-        benchEditText = (EditText) findViewById(R.id.benchEditText);
-        deadliftEditText = (EditText) findViewById(R.id.deadliftEditText);
-        overheadpressEditText = (EditText) findViewById(R.id.overheadpressEditText);
-        squatTextView = (TextView) findViewById(R.id.squatTextView);
-        benchTextView = (TextView) findViewById(R.id.benchTextView);
-        deadliftTextView = (TextView) findViewById(R.id.deadliftTextView);
-        overheadpressTextView = (TextView) findViewById(R.id.overheadpressTextView);
+        squatEditText = (EditText) getActivity().findViewById(R.id.squatEditText);
+        benchEditText = (EditText) getActivity().findViewById(R.id.benchEditText);
+        deadliftEditText = (EditText) getActivity().findViewById(R.id.deadliftEditText);
+        overheadpressEditText = (EditText) getActivity().findViewById(R.id.overheadpressEditText);
+        squatTextView = (TextView) getActivity().findViewById(R.id.squatTextView);
+        benchTextView = (TextView) getActivity().findViewById(R.id.benchTextView);
+        deadliftTextView = (TextView) getActivity().findViewById(R.id.deadliftTextView);
+        overheadpressTextView = (TextView) getActivity().findViewById(R.id.overheadpressTextView);
 
-        secondLiftSpinner = (CustomSpinner) findViewById(R.id.secondLiftSpinner);
-        fiveThreeOneTextView = (TextView) findViewById(R.id.fiveThreeOneTextView);
-        offDayTextView = (TextView) findViewById(R.id.offdayTextView);
+        secondLiftSpinner = (CustomSpinner) getActivity().findViewById(R.id.secondLiftSpinner);
+        fiveThreeOneTextView = (TextView) getActivity().findViewById(R.id.fiveThreeOneTextView);
+        offDayTextView = (TextView) getActivity().findViewById(R.id.offdayTextView);
 
 
-        set1TextView = (TextView) findViewById(R.id.set1TextView);
-        set1NumTextView = (TextView) findViewById(R.id.set1NumTextView);
+        set1TextView = (TextView) getActivity().findViewById(R.id.set1TextView);
+        set1NumTextView = (TextView) getActivity().findViewById(R.id.set1NumTextView);
 
-        set2TextView = (TextView) findViewById(R.id.set2TextView);
-        set2NumTextView = (TextView) findViewById(R.id.set2NumTextView);
+        set2TextView = (TextView) getActivity().findViewById(R.id.set2TextView);
+        set2NumTextView = (TextView) getActivity().findViewById(R.id.set2NumTextView);
 
-        set3TextView = (TextView) findViewById(R.id.set3TextView);
-        set3NumTextView = (TextView) findViewById(R.id.set3NumTextView);
+        set3TextView = (TextView) getActivity().findViewById(R.id.set3TextView);
+        set3NumTextView = (TextView) getActivity().findViewById(R.id.set3NumTextView);
 
-        set4TextView = (TextView) findViewById(R.id.set4TextView);
-        set4NumTextView = (TextView) findViewById(R.id.set4NumTextView);
+        set4TextView = (TextView) getActivity().findViewById(R.id.set4TextView);
+        set4NumTextView = (TextView) getActivity().findViewById(R.id.set4NumTextView);
 
-        set5TextView = (TextView) findViewById(R.id.set5TextView);
-        set5NumTextView = (TextView) findViewById(R.id.set5NumTextView);
+        set5TextView = (TextView) getActivity().findViewById(R.id.set5TextView);
+        set5NumTextView = (TextView) getActivity().findViewById(R.id.set5NumTextView);
 
-        set6TextView = (TextView) findViewById(R.id.set6TextView);
-        set6NumTextView = (TextView) findViewById(R.id.set6NumTextView);
+        set6TextView = (TextView) getActivity().findViewById(R.id.set6TextView);
+        set6NumTextView = (TextView) getActivity().findViewById(R.id.set6NumTextView);
 
-        set7TextView = (TextView) findViewById(R.id.set7TextView);
-        set7NumTextView = (TextView) findViewById(R.id.set7NumTextView);
+        set7TextView = (TextView) getActivity().findViewById(R.id.set7TextView);
+        set7NumTextView = (TextView) getActivity().findViewById(R.id.set7NumTextView);
 
-        set8TextView = (TextView) findViewById(R.id.set8TextView);
-        set8NumTextView = (TextView) findViewById(R.id.set8NumTextView);
+        set8TextView = (TextView) getActivity().findViewById(R.id.set8TextView);
+        set8NumTextView = (TextView) getActivity().findViewById(R.id.set8NumTextView);
 
-        set9TextView = (TextView) findViewById(R.id.set9TextView);
-        set9NumTextView = (TextView) findViewById(R.id.set9NumTextView);
+        set9TextView = (TextView) getActivity().findViewById(R.id.set9TextView);
+        set9NumTextView = (TextView) getActivity().findViewById(R.id.set9NumTextView);
     }
 }
 

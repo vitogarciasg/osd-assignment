@@ -231,6 +231,7 @@ public class MainActivity extends AppCompatActivity {
             mpAboutFrag = (AboutFragment) getSupportFragmentManager().getFragment(savedInstanceState, ABOUT);
             mpMachineFrag = (MachineFragment) getSupportFragmentManager().getFragment(savedInstanceState, MACHINES);
             mpBodyPartListFrag = (BodyPartListFragment) getSupportFragmentManager().getFragment(savedInstanceState, BODYTRACKING);
+            mpFivethreeoneFrag = (FiveThreeOne) getSupportFragmentManager().getFragment(savedInstanceState, FIVETHREEONE);
         }
 
         loadPreferences();
@@ -311,7 +312,7 @@ public class MainActivity extends AppCompatActivity {
 
         //add new drawer item
 
-        dataList.add(new DrawerItem(this.getResources().getString(R.string.), R.drawable.ic_machine, true));
+        dataList.add(new DrawerItem("Five Three One", R.drawable.ic_machine, true));
 
         mDrawerAdapter = new CustomDrawerAdapter(this, R.layout.custom_drawer_item,
             dataList);
@@ -403,6 +404,8 @@ public class MainActivity extends AppCompatActivity {
             getSupportFragmentManager().putFragment(outState, SETTINGS, mpSettingFrag);
         if (getBodyPartFragment().isAdded())
             getSupportFragmentManager().putFragment(outState, BODYTRACKING, mpBodyPartListFrag);
+        if (getFiveThreeOne().isAdded())
+            getSupportFragmentManager().putFragment(outState, FIVETHREEONE, mpFivethreeoneFrag);
     }
 
     @Override
@@ -716,6 +719,8 @@ public class MainActivity extends AppCompatActivity {
             ft.replace(R.id.fragment_container, getBodyPartFragment(), BODYTRACKING);
         } else if (pFragmentName.equals(PROFILE)) {
             ft.replace(R.id.fragment_container, getProfileFragment(), PROFILE);
+        } else if(pFragmentName.equals(FIVETHREEONE)) {
+            ft.replace(R.id.fragment_container, getFiveThreeOne(), FIVETHREEONE);
         }
         currentFragmentName = pFragmentName;
         //if (addToBackStack) ft.addToBackStack(null);
@@ -844,12 +849,13 @@ public class MainActivity extends AppCompatActivity {
 
         return mpWeightFrag;
     }
+
     private FiveThreeOne getFiveThreeOne() {
         if (mpFivethreeoneFrag == null)
             mpFivethreeoneFrag = (FiveThreeOne) getSupportFragmentManager().findFragmentByTag(FIVETHREEONE);
         if (mpFivethreeoneFrag == null) mpFivethreeoneFrag = FiveThreeOne.newInstance(FIVETHREEONE, 11);
 
-        return mpWeightFrag;
+        return mpFivethreeoneFrag;
     }
 
 
@@ -998,7 +1004,7 @@ public class MainActivity extends AppCompatActivity {
                     break;
                 case 4:
                     showFragment(FIVETHREEONE);
-                    setTitle(getResources().getText(R.string.));
+                    setTitle("Five Three One");
                     break;
                 case 5:
                     showFragment(BODYTRACKING);
