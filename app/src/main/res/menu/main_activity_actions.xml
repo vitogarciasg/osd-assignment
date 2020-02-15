@@ -52,4 +52,10 @@
         android:title="@string/AboutLabel"
         app:showAsAction="never|withText" />
 
+    <item
+        android:id="@+id/button1"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:title="531"/>
+
 </menu>

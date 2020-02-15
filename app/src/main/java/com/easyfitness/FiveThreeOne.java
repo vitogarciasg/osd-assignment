@@ -14,6 +14,7 @@ import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
@@ -103,6 +104,7 @@ public class FiveThreeOne extends Fragment {
     TextView set9NumTextView;
 
 
+    Button button;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

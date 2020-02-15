@@ -2,6 +2,7 @@ package com.easyfitness;
 
 import android.Manifest;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -16,6 +17,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.PopupMenu;
@@ -201,11 +203,18 @@ public class MainActivity extends AppCompatActivity {
     };
     private long mBackPressed;
 
+    Button button;
+    private Object arg0;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
+
+
+
+
 
         top_toolbar = this.findViewById(R.id.actionToolbar);
         setSupportActionBar(top_toolbar);
@@ -344,6 +353,8 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+
+
     @Override
     protected void onStart() {
         super.onStart();  // Always call the superclass method first
@@ -430,10 +441,31 @@ public class MainActivity extends AppCompatActivity {
             inflater.inflate(R.menu.profile_actions, popup.getMenu());
             popup.setOnMenuItemClickListener(onMenuItemClick);
             popup.show();
+
+            final Context context = this;
+
+            button = (Button) findViewById(R.id.button1);
+
+            button.setOnClickListener(new View.OnClickListener() {
+
+                @Override
+                public void onClick(View arg0) {
+
+                    Intent intent = new Intent(context, FiveThreeOne.class);
+                    startActivity(intent);
+
+                }
+
+            });
+
+
         });
 
         return super.onPrepareOptionsMenu(menu);
     }
+
+
+
 
     private void exportDatabase() {
         // Here, thisActivity is the current activity
@@ -1002,21 +1034,22 @@ public class MainActivity extends AppCompatActivity {
                     showFragment(WEIGHT);
                     setTitle(getResources().getText(R.string.weightMenuLabel));
                     break;
+
                 case 4:
-                    showFragment(FIVETHREEONE);
-                    setTitle("Five Three One");
-                    break;
-                case 5:
                     showFragment(BODYTRACKING);
                     setTitle(getResources().getText(R.string.bodytracking));
                     break;
-                case 6:
+                case 5:
                     showFragment(SETTINGS);
                     setTitle(getResources().getText(R.string.SettingLabel));
                     break;
-                case 7:
+                case 6:
                     showFragment(ABOUT);
                     setTitle(getResources().getText(R.string.AboutLabel));
+                    break;
+                case 7:
+                    showFragment(FIVETHREEONE);
+                    setTitle("Five Three One");
                     break;
                 default:
                     showFragment(FONTESPAGER);
