@@ -599,11 +599,14 @@ public class MainActivity extends AppCompatActivity {
             //onBackPressed();
             //	return true;
 
-            case R.id.action_531:
-                Log.d(FIVETHREEONE, "-------------Action Element Pressed--------------------");
+
             case R.id.action_chrono:
                 ChronoDialogbox cdd = new ChronoDialogbox(MainActivity.this);
                 cdd.show();
+                return true;
+
+            case R.id.action_531:
+                Log.d(FIVETHREEONE, "-------------Action Element Pressed--------------------");
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

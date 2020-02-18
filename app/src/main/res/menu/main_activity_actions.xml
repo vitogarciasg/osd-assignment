@@ -54,8 +54,7 @@
 
     <item
         android:id="@+id/action_531"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:title="531"/>
+        android:title="531"
+        app:showAsAction="never|withText" />/>
 
 </menu>
