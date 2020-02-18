@@ -53,7 +53,7 @@
         app:showAsAction="never|withText" />
 
     <item
-        android:id="@+id/button1"
+        android:id="@+id/action_531"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:title="531"/>

@@ -11,6 +11,7 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -444,7 +445,7 @@ public class MainActivity extends AppCompatActivity {
 
             final Context context = this;
 
-            button = (Button) findViewById(R.id.button1);
+            button = (Button) findViewById(R.id.action_531);
 
             button.setOnClickListener(new View.OnClickListener() {
 
@@ -597,6 +598,9 @@ public class MainActivity extends AppCompatActivity {
             //case android.R.id.home:
             //onBackPressed();
             //	return true;
+
+            case R.id.action_531:
+                Log.d(FIVETHREEONE, "-------------Action Element Pressed--------------------");
             case R.id.action_chrono:
                 ChronoDialogbox cdd = new ChronoDialogbox(MainActivity.this);
                 cdd.show();
